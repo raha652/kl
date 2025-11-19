@@ -71,7 +71,7 @@ async function updateProfile(event) {
   localStorage.setItem('session', JSON.stringify(session));
 
   showToast('پروفایل با موفقیت به‌روزرسانی شد!', '✅');
-  setTimeout(() => navigateTo('/index.html'), 1500);
+  setTimeout(() => navigateTo('index.html'), 1500);
 }
 
 // فشرده‌سازی عکس
@@ -154,5 +154,6 @@ async function initProfilePage() {
 }
 
 document.addEventListener('DOMContentLoaded', initProfilePage);
+
 
 
