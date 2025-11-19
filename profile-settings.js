@@ -50,11 +50,10 @@ async function updateProfile(event) {
     return;
   }
 
-  // آپدیت اطلاعات کاربر
+  // آپدیت کاربر
   currentUser.fullName = fullName;
   if (newPassword) currentUser.password = newPassword;
 
-  // اگر عکس جدید انتخاب شده باشه
   if (photoInput.files[0]) {
     const photoBase64 = await readFileAsBase64(photoInput.files[0]);
     currentUser.photo = photoBase64;
@@ -65,17 +64,17 @@ async function updateProfile(event) {
   if (userIndex !== -1) allUsers[userIndex] = currentUser;
   await saveUsers(allUsers);
 
-  // *** این قسمت خیلی مهمه: آپدیت session ***
-  const session = JSON.parse(localStorage.getItem('session'));
+  // آپدیت session (اینجا درست شد!)
+  let session = JSON.parse(localStorage.getItem('session') || '{}');
   session.fullName = fullName;
+  session.photo = currentUser.photo || '';  // ذخیره عکس در session
   localStorage.setItem('session', JSON.stringify(session));
-  session.photo = currentUser.photo;
-  localStorage.setItem('session', JSON.stringify(session));
+
   showToast('پروفایل با موفقیت به‌روزرسانی شد!', '✅');
   setTimeout(() => navigateTo('/index.html'), 1500);
 }
 
-// تبدیل عکس به Base64 با فشرده‌سازی (خیلی مهمه!)
+// فشرده‌سازی عکس
 function readFileAsBase64(file) {
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -99,7 +98,7 @@ function readFileAsBase64(file) {
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/webp', 0.8)); // webp = حجم خیلی کم + کیفیت عالی
+        resolve(canvas.toDataURL('image/webp', 0.8));
       };
       img.src = e.target.result;
     };
@@ -116,8 +115,7 @@ function showToast(message, icon = '✅') {
   setTimeout(() => toast.classList.remove('active'), 3000);
 }
 
-// basePath درست
-const basePath = '/kl';  // ← اسم ریپازیتوری خودت رو بذار
+const basePath = '/kl';  // ریپازیتوریت kl هست؟
 
 function navigateTo(path) {
   const cleanPath = path.startsWith('/') ? path : '/' + path;
@@ -126,30 +124,29 @@ function navigateTo(path) {
 
 function logout() {
   localStorage.removeItem('session');
-  navigateTo('login.html');
+  navigateTo('/login.html');  // درست شد!
 }
 
 function updateDateTime() {
   const now = new Date();
-  const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-  document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
+  document.getElementById('current-date').textContent = now.toLocaleDateString('fa-IR');
 }
 
 async function initProfilePage() {
   const sessionStr = localStorage.getItem('session');
-  if (!sessionStr) return navigateTo('login.html');
+  if (!sessionStr) return navigateTo('/login.html');
 
   let session;
-  try { session = JSON.parse(sessionStr); } catch { return navigateTo('login.html'); }
+  try { session = JSON.parse(sessionStr); } catch { return navigateTo('/login.html'); }
 
-  if (!session.loggedIn) return navigateTo('login.html');
+  if (!session.loggedIn) return navigateTo('/login.html');
 
   await loadUsers();
   currentUser = allUsers.find(u => u.username === session.username);
-  if (!currentUser) return navigateTo('login.html');
+  if (!currentUser) return navigateTo('/login.html');
 
   document.getElementById('profile-fullname').value = currentUser.fullName || '';
-  document.getElementById('profile-password').value = ''; // رمز رو نشون نده
+  document.getElementById('profile-password').value = '';
 
   if (currentUser.photo) {
     document.getElementById('preview-img').src = currentUser.photo;
@@ -161,6 +158,3 @@ async function initProfilePage() {
 }
 
 document.addEventListener('DOMContentLoaded', initProfilePage);
-
-
-
