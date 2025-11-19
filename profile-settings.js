@@ -115,13 +115,9 @@ function showToast(message, icon = '✅') {
   setTimeout(() => toast.classList.remove('active'), 3000);
 }
 
-const basePath = '/kl';  // ریپازیتوریت kl هست؟
-
 function navigateTo(path) {
-  const cleanPath = path.startsWith('/') ? path : '/' + path;
-  window.location.href = basePath + cleanPath;
+  window.location.href = path;
 }
-
 function logout() {
   localStorage.removeItem('session');
   navigateTo('/login.html');  // درست شد!
@@ -158,3 +154,4 @@ async function initProfilePage() {
 }
 
 document.addEventListener('DOMContentLoaded', initProfilePage);
+
