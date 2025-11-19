@@ -69,7 +69,8 @@ async function updateProfile(event) {
   const session = JSON.parse(localStorage.getItem('session'));
   session.fullName = fullName;
   localStorage.setItem('session', JSON.stringify(session));
-
+  session.photo = currentUser.photo;
+  localStorage.setItem('session', JSON.stringify(session));
   showToast('پروفایل با موفقیت به‌روزرسانی شد!', '✅');
   setTimeout(() => navigateTo('/index.html'), 1500);
 }
@@ -160,5 +161,6 @@ async function initProfilePage() {
 }
 
 document.addEventListener('DOMContentLoaded', initProfilePage);
+
 
 
