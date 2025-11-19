@@ -120,7 +120,7 @@ function navigateTo(path) {
 }
 function logout() {
   localStorage.removeItem('session');
-  navigateTo('/login.html');  // درست شد!
+  navigateTo('login.html');  // درست شد!
 }
 
 function updateDateTime() {
@@ -130,16 +130,16 @@ function updateDateTime() {
 
 async function initProfilePage() {
   const sessionStr = localStorage.getItem('session');
-  if (!sessionStr) return navigateTo('/login.html');
+  if (!sessionStr) return navigateTo('login.html');
 
   let session;
-  try { session = JSON.parse(sessionStr); } catch { return navigateTo('/login.html'); }
+  try { session = JSON.parse(sessionStr); } catch { return navigateTo('login.html'); }
 
-  if (!session.loggedIn) return navigateTo('/login.html');
+  if (!session.loggedIn) return navigateTo('login.html');
 
   await loadUsers();
   currentUser = allUsers.find(u => u.username === session.username);
-  if (!currentUser) return navigateTo('/login.html');
+  if (!currentUser) return navigateTo('login.html');
 
   document.getElementById('profile-fullname').value = currentUser.fullName || '';
   document.getElementById('profile-password').value = '';
@@ -154,4 +154,5 @@ async function initProfilePage() {
 }
 
 document.addEventListener('DOMContentLoaded', initProfilePage);
+
 
